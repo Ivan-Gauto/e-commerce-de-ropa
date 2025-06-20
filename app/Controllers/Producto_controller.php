@@ -215,8 +215,14 @@ class Producto_controller extends Controller
     {
         $productoModel = new Producto_Model();
         $producto = $productoModel->where('id_producto', $id)->first();
-
-        $campos = [
+    
+        if (!$producto) {
+            session()->setFlashdata('fail', 'Producto no encontrado.');
+            return redirect()->to('/crud_productos_view');
+        }
+    
+        // Verificar campos obligatorios
+        $camposObligatorios = [
             'nombre_prod',
             'categorias',
             'marcas',
@@ -228,64 +234,53 @@ class Producto_controller extends Controller
             'stock',
             'stock_min',
         ];
-
-        $campos_vacios = [];
-        foreach ($campos as $campo) {
+    
+        $faltantes = [];
+        foreach ($camposObligatorios as $campo) {
             $valor = $this->request->getVar($campo);
             if ($valor === null || trim($valor) === '') {
-                $campos_vacios[] = $campo;
+                $faltantes[] = $campo;
             }
         }
-
-        if (count($campos_vacios) > 0) {
+    
+        if (!empty($faltantes)) {
             session()->setFlashdata('error', 'Por favor, completa todos los campos obligatorios.');
             return redirect()->back()->withInput();
         }
-
+    
         $img = $this->request->getFile('imagen');
-
-        if ($img && $img->isValid()) {
+        $data = [
+            'nombre_prod'  => $this->request->getVar('nombre_prod'),
+            'id_categoria' => $this->request->getVar('categorias'),
+            'id_marca'     => $this->request->getVar('marcas'),
+            'id_talle'     => $this->request->getVar('talles'),
+            'id_genero'    => $this->request->getVar('generos'),
+            'id_edad'      => $this->request->getVar('edades'),
+            'precio_costo' => $this->request->getVar('precio_costo'),
+            'precio_venta' => $this->request->getVar('precio_venta'),
+            'stock'        => $this->request->getVar('stock'),
+            'stock_min'    => $this->request->getVar('stock_min'),
+            'eliminado'    => 'NO',
+        ];
+    
+        // Si se cargó una imagen válida
+        if ($img && $img->isValid() && !$img->hasMoved()) {
             $rutaDestino = ROOTPATH . 'public/assets/uploads';
             $nombre_aleatorio = $img->getRandomName();
             $img->move($rutaDestino, $nombre_aleatorio);
-            $data = [
-                'nombre_prod' => $this->request->getVar('nombre_prod'),
-                'id_categoria' => $this->request->getVar('categorias'),
-                'id_marca' => $this->request->getVar('marcas'),
-                'id_talle' => $this->request->getVar('talles'),
-                'id_genero' => $this->request->getVar('generos'),
-                'id_edad' => $this->request->getVar('edades'),
-                'precio_costo' => $this->request->getVar('precio_costo'),
-                'precio_venta' => $this->request->getVar('precio_venta'),
-                'stock' => $this->request->getVar('stock'),
-                'stock_min' => $this->request->getVar('stock_min'),
-                'imagen' => $nombre_aleatorio,
-                'eliminado' => 'NO',
-            ];
-        } else {
-            $data = [
-                'nombre_prod' => $this->request->getVar('nombre_prod'),
-                'id_categoria' => $this->request->getVar('categorias'),
-                'id_marca' => $this->request->getVar('marcas'),
-                'id_talle' => $this->request->getVar('talles'),
-                'id_genero' => $this->request->getVar('generos'),
-                'id_edad' => $this->request->getVar('edades'),
-                'precio_costo' => $this->request->getVar('precio_costo'),
-                'precio_venta' => $this->request->getVar('precio_venta'),
-                'stock' => $this->request->getVar('stock'),
-                'stock_min' => $this->request->getVar('stock_min'),
-                'eliminado' => 'NO',
-            ];
+            $data['imagen'] = $nombre_aleatorio;
         }
-
-        if ($productoModel->update($producto['id_producto'], $data)) {
+    
+        // Guardar cambios
+        if ($productoModel->update($id, $data)) {
             session()->setFlashdata('success', 'Modificación exitosa.');
         } else {
-            session()->setFlashdata('error', 'No se pudo actualizar el producto.');
+            session()->setFlashdata('fail', 'No se pudo actualizar el producto.');
         }
-
+    
         return redirect()->to(base_url('/editar_productos_view/' . $id));
     }
+    
 
     // Muestra el catálogo de productos con filtros
     public function catalogo()

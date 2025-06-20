@@ -1,5 +1,5 @@
 <?php ?>
-<?= csrf_field() ?> <!-- Protección CSRF -->
+<?= csrf_field() ?>
 
 <div class="container d-flex flex-column justify-content-center align-items-center my-5">
     <form id="formulario-editar-productos" class="formulario bg-black text-white p-4 rounded shadow-lg w-100"
@@ -73,10 +73,60 @@
                         <div class="input-group">
                             <span class="input-group-text">$</span>
                             <input type="text" class="form-control" id="precio_costo" name="precio_costo"
-                                value="<?= old('precio_costo') ? formatear_numero(old('precio_costo')) : formatear_numero($old['precio_costo']) ?>">
+                                value="<?= old('precio_costo') ?>">
                         </div>
                     </div>
 
                     <!-- Precio de venta -->
                     <div class="col-md-6">
                         <label for="precio_venta" class="form-label">Precio de venta</label>
+                        <div class="input-group">
+                            <span class="input-group-text">$</span>
+                            <input type="text" class="form-control" id="precio_venta" name="precio_venta"
+                                value="<?= old('precio_venta') ?>">
+                        </div>
+                    </div>
+
+                    <!-- Stock -->
+                    <div class="col-md-6">
+                        <label for="stock" class="form-label">Stock</label>
+                        <input type="number" min="<?= esc($old['stock_min']) ?>" class="form-control" id="stock" name="stock"
+                            value="<?= esc($old['stock']) ?>">
+                    </div>
+
+                    <!-- Stock mínimo -->
+                    <div class="col-md-6">
+                        <label for="stock_min" class="form-label">Stock mínimo</label>
+                        <input type="number" min="0" class="form-control" id="stock_min" name="stock_min"
+                            value="<?= esc($old['stock_min']) ?>">
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 3: Imagen -->
+            <div class="tab-pane fade" id="imagen" role="tabpanel">
+                <div class="d-flex flex-column justify-content-center align-items-center">
+                    <label class="form-label">Imagen</label>
+                    <?php if (!empty($old['imagen'])): ?>
+                        <div class="d-flex justify-content-center align-items-center mb-3"
+                            style="width: 200px; height: 250px; border: 1px dashed #ccc; padding: 5px;">
+                            <img id="preview-img" src="<?= base_url('public/assets/uploads/' . esc($old['imagen'])) ?>"
+                                alt="Imagen del producto" style="width: 180px; height: 230px; object-fit: cover;">
+                        </div>
+                    <?php else: ?>
+                        <p>No hay imagen disponible.</p>
+                    <?php endif; ?>
+                    <input class="form-control" type="file" id="imagen" name="imagen" accept="image/*">
+                </div>
+            </div>
+        </div>
+
+        <!-- Botones -->
+        <div class="d-flex justify-content-start gap-3 mt-4">
+            <button type="submit" class="btn btn-outline-success"><i class="bi bi-save"></i> Guardar cambios</button>
+            <a href="<?= site_url('/crud_productos_view') ?>" class="btn btn-outline-danger">
+                <i class="bi bi-x-circle"></i> Cancelar
+            </a>
+        </div>
+    </form>
+</div>
