@@ -1,6 +1,6 @@
 # 🛒 E-Commerce de Ropa
 
-Este proyecto es una aplicación web de e-commerce desarrollada en **PHP con CodeIgniter 3**, diseñada para la venta de ropa. Incluye funcionalidades tanto para usuarios como para administradores, ofreciendo una experiencia completa de compra, gestión y personalización.
+Este proyecto es una aplicación web de e-commerce desarrollada en **PHP con CodeIgniter**, diseñada para la venta de ropa. Incluye funcionalidades tanto para usuarios como para administradores, ofreciendo una experiencia completa de compra, gestión y personalización.
 
 ## ✨ Características principales
 
@@ -14,14 +14,8 @@ Este proyecto es una aplicación web de e-commerce desarrollada en **PHP con Cod
 
 ## 🛠️ Tecnologías utilizadas
 
-- **Backend**: PHP 7.x con CodeIgniter 3  
+- **Backend**: PHP 7.x con CodeIgniter
 - **Base de datos**: MySQL  
 - **Frontend**: HTML5, CSS3, JavaScript (vanilla)  
 - **Estilos**: Bootstrap (y estilos personalizados)  
 - **Servidor local**: XAMPP  
-
-## 🚀 Cómo ejecutar el proyecto
-
-1. Clonar el repositorio:
-   ```bash
-   git clone https://github.com/Ivan-Gauto/e-commerce-de-ropa.git
