@@ -2,6 +2,7 @@
     <h1 class="text-center mb-4 fw-light">Catálogo de Productos</h1>
     <hr>
 
+    <!-- Botón para abrir filtros -->
     <div class="d-flex justify-content-end mb-3">
         <button class="btn boton-negro" type="button" data-bs-toggle="offcanvas" data-bs-target="#filtrosOffcanvas"
             aria-controls="filtrosOffcanvas" aria-label="Abrir filtros">
@@ -9,7 +10,7 @@
         </button>
     </div>
 
-    <!-- Offcanvas filtros -->
+    <!-- Offcanvas de filtros -->
     <div class="offcanvas offcanvas-end bg-black text-white" tabindex="-1" id="filtrosOffcanvas"
         aria-labelledby="filtrosOffcanvasLabel">
         <div class="offcanvas-header">
@@ -18,7 +19,8 @@
         </div>
         <div class="offcanvas-body">
             <form method="get" action="<?= site_url('catalogo_productos_view') ?>">
-                <!-- Filtros Edad -->
+
+                <!-- Filtros dinámicos -->
                 <div class="mb-4">
                     <h6>Filtrar por Edad</h6>
                     <?php foreach ($edades as $edad): ?>
@@ -30,7 +32,6 @@
                     <?php endforeach; ?>
                 </div>
 
-                <!-- Filtros Categoría -->
                 <div class="mb-4">
                     <h6>Filtrar por Categoría</h6>
                     <?php foreach ($categorias as $categoria): ?>
@@ -42,7 +43,6 @@
                     <?php endforeach; ?>
                 </div>
 
-                <!-- Filtros Marca -->
                 <div class="mb-4">
                     <h6>Filtrar por Marca</h6>
                     <?php foreach ($marcas as $marca): ?>
@@ -54,7 +54,6 @@
                     <?php endforeach; ?>
                 </div>
 
-                <!-- Filtros Género -->
                 <div class="mb-4">
                     <h6>Filtrar por Género</h6>
                     <?php foreach ($generos as $genero): ?>
@@ -82,9 +81,12 @@
                 <div class="card bg-black text-white shadow" style="width: 230px; cursor: default !important;">
                     <img src="<?= base_url('public/assets/uploads/' . $producto['imagen']) ?>" class="card-img-top"
                         alt="<?= esc($producto['nombre_prod']) ?>" style="height: 250px; object-fit: cover;">
+
                     <div class="card-body d-flex flex-column">
                         <h5 class="card-title"><?= esc($producto['nombre_prod']) ?></h5>
-                        <p class="card-text mb-1 fw-bold">$<?= number_format($producto['precio_venta'], 2, ',', '.') ?></p>
+                        <p class="card-text mb-1 fw-bold">
+                            $<?= number_format($producto['precio_venta'], 2, ',', '.') ?></p>
+
                         <p class="card-text mb-2">
                             <small><?= $producto['stock'] ?> unidades disponibles</small><br>
                             <?php if ($producto['stock'] > 0): ?>
@@ -93,15 +95,19 @@
                                 <span class="badge bg-danger">Sin stock</span>
                             <?php endif; ?>
                         </p>
+
                         <form action="<?= site_url('carrito_view/agregar') ?>" method="post" class="mt-auto">
                             <input type="hidden" name="id" value="<?= $producto['id_producto'] ?>">
                             <input type="hidden" name="nombre_prod" value="<?= $producto['nombre_prod'] ?>">
                             <input type="hidden" name="precio_venta" value="<?= $producto['precio_venta'] ?>">
                             <input type="hidden" name="imagen" value="<?= $producto['imagen'] ?>">
+
                             <div class="input-group w-100 mb-2">
                                 <span class="input-group-text">Cantidad</span>
-                                <input type="number" name="cantidad" min="1" max="<?= $producto['stock'] ?>" value="1" class="form-control">
+                                <input type="number" name="cantidad" min="1" max="<?= $producto['stock'] ?>" value="1"
+                                    class="form-control">
                             </div>
+
                             <button type="submit" class="btn btn-outline-light w-100" <?= $producto['stock'] <= 0 ? 'disabled' : '' ?>>
                                 Agregar al carrito
                             </button>
@@ -114,25 +120,22 @@
 
     <!-- Paginación -->
     <?php if ($pager): ?>
-        <div class="mt-5 w-100 d-flex justify-content-center">
-            <nav>
-                <ul class="pagination justify-content-center" style="gap: 8px;">
+        <div class="mt-5 d-flex justify-content-center">
+            <nav aria-label="Paginación de productos">
+                <ul class="pagination justify-content-center gap-1">
+
                     <?= str_replace(
-                        ['<li class="active">', '<li class="disabled">', '<li>', '</li>', '&laquo;', '&raquo;'],
+                        ['<li class="active">', '<li>', '</li>', '<a', '</a>'],
                         [
-                            '<li class="page-item active">',
-                            '<li class="page-item disabled">',
-                            '<li class="page-item">',
-                            '</li>',
-                            '<span class="page-link bg-dark text-white border-white"><i class="bi bi-chevron-left"></i></span>',
-                            '<span class="page-link bg-dark text-white border-white"><i class="bi bi-chevron-right"></i></span>'
+                            '<li class="page-item active"><a class="page-link bg-dark text-white border-dark"',
+                            '<li class="page-item"><a class="page-link bg-white text-dark border-dark"',
+                            '</a></li>',
+                            '<a class="page-link"',
+                            '</a>'
                         ],
-                        str_replace(
-                            ['class="page-link"'],
-                            ['class="page-link bg-white text-dark border-dark" style="border-radius: 0.25rem;"'],
-                            $pager->links()
-                        )
+                        $pager->links()
                     ) ?>
+
                 </ul>
             </nav>
         </div>
