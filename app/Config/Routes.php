@@ -63,7 +63,7 @@ $routes->get('catalogo_productos_view', 'Producto_controller::catalogo', ['filte
  * Rutas de compras
  */
 $routes->get('mis_compras', 'Ventas_controller::misCompras', ['filter' => 'auth:cliente']);
-$routes->get('ver_factura/(:num)', 'Ventas_controller::ver_Factura/$1', ['filter' => 'auth:cliente']);
+$routes->get('ver_factura/(:num)', 'Ventas_controller::ver_Factura/$1', ['filter' => 'auth']);
 $routes->get('ventas_admin', 'Ventas_controller::todasLasVentas', ['filter' => 'auth:admin']);
 $routes->get('ver_factura_admin/(:num)', 'Ventas_controller::verFactura/$1', ['filter' => 'auth:admin']);
 
