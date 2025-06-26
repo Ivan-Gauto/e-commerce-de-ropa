@@ -51,6 +51,8 @@ $routes->get('/eliminar_producto/(:num)', 'Producto_controller::eliminar_product
  */
 $routes->get('consultas_view', 'Consultas_controller::listar', ['filter' => 'auth:admin']);
 $routes->post('guardar_consulta', 'Consultas_controller::guardar');
+$routes->get('consultas/leidas', 'Consultas_controller::leidas');
+$routes->get('consultas/marcarComoLeida/(:num)', 'Consultas_controller::marcarComoLeida/$1', ['filter' => 'auth:admin']);
 
 /**
  * Ruta de catalogo
