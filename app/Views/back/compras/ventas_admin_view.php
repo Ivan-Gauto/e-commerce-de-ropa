@@ -16,11 +16,11 @@
             <table class="table table-bordered table-striped table-hover align-middle mb-0" style="min-width: 900px;">
                 <thead class="bg-black text-white sticky-top" style="top: 0; z-index: 1;">
                     <tr>
-                        <th>ID Venta</th>
-                        <th>Cliente</th>
-                        <th>Total</th>
-                        <th>Fecha</th>
-                        <th>Opción</th>
+                        <th class="bg-black text-white">ID Venta</th>
+                        <th class="bg-black text-white">Cliente</th>
+                        <th class="bg-black text-white">Total</th>
+                        <th class="bg-black text-white">Fecha</th>
+                        <th class="bg-black text-white">Opción</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -44,7 +44,7 @@
         <!-- Vista móvil con scroll vertical -->
         <div class="d-md-none overflow-auto mt-3 bg-white border rounded shadow-sm p-3" style="max-height: 500px;">
             <?php foreach ($ventas as $venta): ?>
-                <div class="card mb-3 shadow-sm w-100">
+                <div class="card w-100 shadow-sm border" style="cursor: default;">
                     <div class="card-body">
                         <p class="mb-1"><strong>ID Venta:</strong> <?= esc($venta['id']) ?></p>
                         <p class="mb-1"><strong>Cliente:</strong> <?= esc($venta['nombre']) . ' ' . esc($venta['apellido']) ?></p>
