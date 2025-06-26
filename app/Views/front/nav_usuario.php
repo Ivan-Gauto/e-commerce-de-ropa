@@ -21,7 +21,7 @@
                     </div>
                     <div class="d-flex align-items-center">
                         <img style="width: 10vw;"
-                            src="<?= base_url('public/assets/img/Remeras/Hombres/Remera-rider-hombre.jpg') ?>"
+                            src="<?= base_url('public/assets/img/Ropa/Remera-rider-hombre.jpg') ?>"
                             alt="Promo 1">
                         <div class="p-4">
                             <strong>Descuento del 20%</strong><br>
