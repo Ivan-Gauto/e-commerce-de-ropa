@@ -292,11 +292,11 @@ class Producto_controller extends Controller
     // Muestra el catálogo de productos con filtros
     public function catalogo()
     {
-        $productoModel = new Producto_model();
-        $generoModel = new Genero_model();
-        $edadModel = new Edad_model();
-        $categoriaModel = new Categoria_model();
-        $marcaModel = new Marca_model();
+        $productoModel = new \App\Models\Producto_model();
+        $generoModel = new \App\Models\Genero_model();
+        $edadModel = new \App\Models\Edad_model();
+        $categoriaModel = new \App\Models\Categoria_model();
+        $marcaModel = new \App\Models\Marca_model();
 
         $filtros = [
             'genero' => $generoModel->findAll(),
@@ -305,33 +305,28 @@ class Producto_controller extends Controller
             'marca' => $marcaModel->findAll(),
         ];
 
-        // Captura de filtros desde la URL (GET)
+        $productos = $productoModel->where('eliminado', 'NO');
+
+        // filtros opcionales
         $generoId = $this->request->getGet('genero');
         $edadId = $this->request->getGet('edad');
         $categoriaId = $this->request->getGet('categoria');
         $marcaId = $this->request->getGet('marca');
-
-        $productos = $productoModel->where('eliminado', 'NO');
 
         if ($generoId) $productos->where('genero_id', $generoId);
         if ($edadId) $productos->where('edad_id', $edadId);
         if ($categoriaId) $productos->where('categoria_id', $categoriaId);
         if ($marcaId) $productos->where('marca_id', $marcaId);
 
-        $data = [
-            'productos' => $productos->findAll(),
-            'titulo' => 'Catálogo de Productos',
-            'edades' => $filtros['edad'],
-            'categorias' => $filtros['categoria'],
-            'marcas' => $filtros['marca'],
-            'generos' => $filtros['genero'],
-            'filtroActual' => [
-                'genero' => $generoId,
-                'edad' => $edadId,
-                'categoria' => $categoriaId,
-                'marca' => $marcaId
-            ]
-        ];
+        // paginación
+        $data['productos'] = $productos->paginate(3); //6 productos por página
+        $data['pager'] = $productoModel->pager;
+
+        $data['titulo'] = 'Catálogo de Productos';
+        $data['generos'] = $filtros['genero'];
+        $data['edades'] = $filtros['edad'];
+        $data['categorias'] = $filtros['categoria'];
+        $data['marcas'] = $filtros['marca'];
 
         echo view('front/head_view', ['titulo' => $data['titulo']]);
         echo view('front/nav_view');
@@ -339,4 +334,5 @@ class Producto_controller extends Controller
         echo view('front/catalogo_productos_view', $data);
         echo view('front/footer_view');
     }
+
 }
