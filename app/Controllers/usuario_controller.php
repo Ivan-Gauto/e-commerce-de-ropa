@@ -32,7 +32,7 @@ class Usuario_controller extends Controller
             $data['usuarios'] = $usuarioModel->where('baja', 'NO')->findAll();
         }
 
-    
+
         $data['titulo'] = 'CRUD de Usuarios';
         $data['buscar'] = $buscar;
 
@@ -64,7 +64,7 @@ class Usuario_controller extends Controller
             $data['usuarios'] = $usuarioModel->where('baja', 'SI')->findAll();
         }
 
-        
+
         $data['titulo'] = 'Usuarios eliminados';
         $data['buscar'] = $buscar;
 
@@ -81,14 +81,20 @@ class Usuario_controller extends Controller
 
         // Verifica si el usuario existe
         $usuario = $usuarioModel->find($id);
+        $perfil = $usuario['perfil_id'];
+
         if (!$usuario) {
             throw \CodeIgniter\Exceptions\PageNotFoundException::forPageNotFound("Usuario no encontrado");
         }
 
-        // Marca el usuario como eliminado
-        $usuarioModel->update($id, ['baja' => 'SI']);
+        if ($perfil == 1) {
+            session()->setFlashdata('error', 'No se puede eliminar el usuario de administrador.');
+        } else {
+            // Marca el usuario como eliminado
+            $usuarioModel->update($id, ['baja' => 'SI']);
+            session()->setFlashdata('success', 'Usuario eliminado correctamente.');
+        }
 
-        session()->setFlashdata('success', 'Usuario eliminado correctamente.');
         return redirect()->to('/crud_usuarios_view');
     }
 
@@ -104,7 +110,7 @@ class Usuario_controller extends Controller
                 'pass' => 'required|min_length[6]|max_length[30]',
             ],
             [
-            
+
             ]
         );
 
@@ -195,7 +201,7 @@ class Usuario_controller extends Controller
         ];
 
         $messages = [
-            
+
         ];
 
         if (!$this->validate($rules, $messages)) {
