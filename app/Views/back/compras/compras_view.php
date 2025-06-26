@@ -25,10 +25,10 @@
             <table class="table table-bordered table-striped text-center align-middle mb-0" style="min-width: 800px;">
                 <thead class="bg-black text-white sticky-top" style="top: 0; z-index: 1;">
                     <tr>
-                        <th>N° Orden</th>
-                        <th>Fecha</th>
-                        <th>Total</th>
-                        <th>Ver Detalle</th>
+                        <th class="bg-black text-white">N° Orden</th>
+                        <th class="bg-black text-white">Fecha</th>
+                        <th class="bg-black text-white">Total</th>
+                        <th class="bg-black text-white">Ver Detalle</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -51,7 +51,7 @@
         <!-- Vista móvil: tarjetas full width -->
         <div class="d-md-none d-flex flex-column gap-3 mt-4">
             <?php foreach ($ventas as $venta): ?>
-                <div class="card shadow-sm border w-100">
+                <div class="card shadow-sm border w-100" style="cursor: default;">
                     <div class="card-body">
                         <p><strong>N° Orden:</strong> <?= $venta['id'] ?></p>
                         <p><strong>Fecha:</strong> <?= $venta['fecha'] ?></p>

@@ -1,4 +1,4 @@
-<div class="container my-5">
+<div class="container my-5" style="min-height: 400px;">
     <h2 class="mb-4 text-center">Detalle de la compra</h2>
 
     <!-- Muestra un mensaje si no hay datos de la compra -->
