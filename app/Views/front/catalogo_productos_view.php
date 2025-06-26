@@ -118,26 +118,26 @@
         <?php endif; ?>
     </div>
 
-    <!-- Paginación -->
     <?php if ($pager): ?>
-        <div class="mt-5 d-flex justify-content-center">
-            <nav aria-label="Paginación de productos">
-                <ul class="pagination justify-content-center gap-1">
 
-                    <?= str_replace(
-                        ['<li class="active">', '<li>', '</li>', '<a', '</a>'],
-                        [
-                            '<li class="page-item active"><a class="page-link bg-dark text-white border-dark"',
-                            '<li class="page-item"><a class="page-link bg-white text-dark border-dark"',
-                            '</a></li>',
-                            '<a class="page-link"',
-                            '</a>'
-                        ],
-                        $pager->links()
-                    ) ?>
-
-                </ul>
-            </nav>
-        </div>
-    <?php endif; ?>
+    <div class="mt-5 d-flex justify-content-center">
+        <nav aria-label="Paginación de productos">
+            <ul class="pagination justify-content-center">
+                <?= str_replace(
+                    ['<li class="active">', '<li>', '</li>', '<a', '</a>', '&laquo;', '&raquo;'],
+                    [
+                        '<li class="page-item active"><a class="page-link"',
+                        '<li class="page-item"><a class="page-link"',
+                        '</a></li>',
+                        '<a class="page-link mx-1"',
+                        '</a>',
+                        '<span class="page-link bg-black text-white border-dark">Anterior</span>',
+                        '<span class="page-link bg-black text-white border-dark">Siguiente</span>',
+                    ],
+                    $pager->links()
+                ) ?>
+            </ul>
+        </nav>
+    </div>
+<?php endif; ?>
 </section>
