@@ -98,11 +98,6 @@ $validation = $validation ?? \Config\Services::validation();
             <div class="d-flex justify-content-between mt-5">
                 <button type="submit" name="accion" value="guardar" class="btn btn-success" id="guardarBtn"
                     disabled>Guardar cambios</button>
-
-                <button type="submit" name="accion" value="eliminar" class="btn btn-danger"
-                    onclick="return confirm('¿Estás seguro que querés eliminar tu cuenta? Esta acción es irreversible.')">
-                    Eliminar cuenta
-                </button>
             </div>
         </div>
     </div>
