@@ -48,15 +48,15 @@
             </table>
         </div>
 
-        <!-- Vista móvil: tarjetas full width -->
-        <div class="d-md-none d-flex flex-column gap-3 mt-4">
+        <!-- Vista móvil: tarjetas con scroll vertical -->
+        <div class="d-md-none overflow-auto mt-4 bg-white border rounded shadow-sm p-3" style="max-height: 400px;">
             <?php foreach ($ventas as $venta): ?>
-                <div class="card shadow-sm border w-100">
+                <div class="card mb-3 shadow-sm w-100">
                     <div class="card-body">
                         <p><strong>N° Orden:</strong> <?= $venta['id'] ?></p>
                         <p><strong>Fecha:</strong> <?= $venta['fecha'] ?></p>
                         <p><strong>Total:</strong> $<?= number_format($venta['total_venta'], 2, ',', '.') ?></p>
-                        <a href="<?= site_url('ver_factura/' . $venta['id']) ?>" class="btn btn-sm btn-outline-primary">
+                        <a href="<?= site_url('ver_factura/' . $venta['id']) ?>" class="btn btn-sm btn-outline-primary w-100">
                             Ver factura
                         </a>
                     </div>
