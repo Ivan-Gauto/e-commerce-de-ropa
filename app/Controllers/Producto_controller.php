@@ -98,7 +98,7 @@ class Producto_controller extends Controller
     public function store()
     {
         $productoModel = new Producto_Model();
-
+    
         $input = $this->validate([
             'nombre_prod' => [
                 'rules' => 'required|min_length[3]',
@@ -108,33 +108,39 @@ class Producto_controller extends Controller
                 ]
             ],
         ]);
-
-        if (!$input) {
-
+    
+        $img = $this->request->getFile('imagen');
+    
+        // Se valida la suba de imagen
+        if (!$img || !$img->isValid()) {
+    
+            if (!$img || !$img->isValid()) {
+                session()->setFlashdata('error', 'Debe subir una imagen para el producto.');
+            }
+    
             $categoriaModel = new Categoria_model();
             $marcaModel = new Marca_model();
             $talleModel = new Talle_model();
             $generoModel = new Genero_model();
             $edadModel = new Edad_model();
-
+    
             $data['categorias'] = $categoriaModel->getCategorias();
             $data['marcas'] = $marcaModel->getMarcas();
             $data['talles'] = $talleModel->getTalles();
             $data['generos'] = $generoModel->getGeneros();
             $data['edades'] = $edadModel->getEdades();
             $data['validation'] = $this->validator;
-
+    
             $dato['titulo'] = 'Alta producto';
             echo view('front/head_view', $dato);
             echo view('front/nav_view');
             echo view('back/productos/alta_productos_view', $data);
             echo view('front/footer_view');
         } else {
-            
-            $img = $this->request->getFile('imagen');
+    
             $nombre_aleatorio = $img->getRandomName();
             $img->move(ROOTPATH . 'public/assets/uploads', $nombre_aleatorio);
-
+    
             $data = [
                 'nombre_prod' => $this->request->getVar('nombre_prod'),
                 'categoria_id' => $this->request->getVar('categorias'),
@@ -149,12 +155,13 @@ class Producto_controller extends Controller
                 'imagen' => $nombre_aleatorio,
                 'eliminado' => 'NO'
             ];
-
+    
             $productoModel->insert($data);
             session()->setFlashdata('success', 'Producto creado correctamente.');
             return redirect()->to(base_url('/crud_productos_view'));
         }
     }
+    
 
     private function convertir_a_float($valor)
     {
