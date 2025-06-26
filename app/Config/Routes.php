@@ -72,4 +72,4 @@ $routes->post('carrito_view/agregar', 'Carrito_controller::agregar',['filter' =>
 $routes->post('carrito_view/actualizar', 'Carrito_controller::actualizar', ['filter' => 'auth:cliente']);
 $routes->get('carrito_view/eliminar/(:any)', 'Carrito_controller::eliminar/$1',['filter' => 'auth:cliente']);
 $routes->get('carrito_view/vaciar', 'Carrito_controller::vaciar', ['filter' => 'auth:cliente']);
-$routes->get('checkout', 'Ventas_controller::registrar_venta', ['filter' => 'auth']);
+$routes->get('checkout', 'Ventas_controller::registrar_venta', ['filter' => 'auth:cliente']);

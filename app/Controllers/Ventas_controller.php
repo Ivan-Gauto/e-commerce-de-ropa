@@ -24,6 +24,11 @@ class Ventas_controller extends Controller
         $productos_sin_stock = [];
         $total = 0;
 
+        if (!empty($carrito)) {
+            $session->setFlashdata('error', 'El carrito está vacío. No se puede realizar una compra.');
+            return redirect()->to(site_url('catalogo_productos_view'));
+        }        
+
         // Verifica que haya suficiente stock para cada producto en el carrito
         foreach ($carrito as $item) {
             $producto = $productoModel->find($item['id']);
