@@ -120,7 +120,7 @@ class Ventas_controller extends Controller
     public function misCompras()
     {
         $session = session();
-        $usuario_id = $session->get('id_usuario');
+        $usuario_id = $session->get('id');
 
         $ventasModel = new Ventas_cabecera_model();
         $data['ventas'] = $ventasModel->getVentas($usuario_id);
