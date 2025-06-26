@@ -1,6 +1,6 @@
 <div class="container-fluid">
     <!-- Enlace al logo con la redirección a la página principal -->
-    <a href="<?= base_url('plantilla_principal') ?>"><img style="width: 100px"
+    <a href="<?= base_url('crud_productos_view') ?>"><img style="width: 100px"
             src="<?= base_url('public/assets/img/Iconos/logo.png') ?>" alt="responsive"></a>
 
     <!-- Botón para mostrar el menú en dispositivos pequeños -->

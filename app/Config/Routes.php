@@ -50,20 +50,20 @@ $routes->get('/eliminar_producto/(:num)', 'Producto_controller::eliminar_product
  * Rutas de consulta
  */
 $routes->get('consultas_view', 'Consultas_controller::listar', ['filter' => 'auth:admin']);
-$routes->post('guardar_consulta', 'Consultas_controller::guardar');
-$routes->get('consultas/leidas', 'Consultas_controller::leidas');
+$routes->post('guardar_consulta', 'Consultas_controller::guardar', ['filter' => 'auth:cliente']);
+$routes->get('consultas/leidas', 'Consultas_controller::leidas', ['filter' => 'auth:admin']);
 $routes->get('consultas/marcarComoLeida/(:num)', 'Consultas_controller::marcarComoLeida/$1', ['filter' => 'auth:admin']);
 
 /**
  * Ruta de catalogo
  */
-$routes->get('catalogo_productos_view', 'Producto_controller::catalogo');
+$routes->get('catalogo_productos_view', 'Producto_controller::catalogo', ['filter' => 'auth:cliente']);
 
 /**
  * Rutas de compras
  */
-$routes->get('mis_compras', 'Ventas_controller::misCompras', ['filter' => 'auth']);
-$routes->get('ver_factura/(:num)', 'Ventas_controller::ver_Factura/$1', ['filter' => 'auth']);
+$routes->get('mis_compras', 'Ventas_controller::misCompras', ['filter' => 'auth:cliente']);
+$routes->get('ver_factura/(:num)', 'Ventas_controller::ver_Factura/$1', ['filter' => 'auth:cliente']);
 $routes->get('ventas_admin', 'Ventas_controller::todasLasVentas', ['filter' => 'auth:admin']);
 $routes->get('ver_factura_admin/(:num)', 'Ventas_controller::verFactura/$1', ['filter' => 'auth:admin']);
 
