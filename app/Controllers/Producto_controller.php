@@ -319,7 +319,7 @@ class Producto_controller extends Controller
         if ($marcaId) $productos->where('marca_id', $marcaId);
 
         // paginación
-        $data['productos'] = $productos->paginate(3); //6 productos por página
+        $data['productos'] = $productos->paginate(5); //cuantos productos por página
         $data['pager'] = $productoModel->pager;
 
         $data['titulo'] = 'Catálogo de Productos';
