@@ -96,114 +96,157 @@ class Producto_controller extends Controller
 
     // Guarda un nuevo producto en la base de datos
     public function store()
-    {
-        $productoModel = new Producto_Model();
-    
-        // Validación completa
-        $input = $this->validate([
-            'nombre_prod' => [
-                'rules' => 'required|min_length[3]',
-                'errors' => [
-                    'required' => 'El nombre del producto es obligatorio.',
-                    'min_length' => 'Debe tener al menos 3 caracteres.'
-                ]
-            ],
-            'categorias' => [
-                'rules' => 'required',
-                'errors' => [
-                    'required' => 'Debe seleccionar una categoría.'
-                ]
-            ],
-            'marcas' => [
-                'rules' => 'required',
-                'errors' => [
-                    'required' => 'Debe seleccionar una marca.'
-                ]
-            ],
-            'talles' => [
-                'rules' => 'required',
-                'errors' => [
-                    'required' => 'Debe seleccionar un talle.'
-                ]
-            ],
-            'generos' => [
-                'rules' => 'required',
-                'errors' => [
-                    'required' => 'Debe seleccionar un género.'
-                ]
-            ],
-            'edades' => [
-                'rules' => 'required',
-                'errors' => [
-                    'required' => 'Debe seleccionar una edad.'
-                ]
-            ],
-            'precio_costo' => [
-                'rules' => 'required',
-                'errors' => [
-                    'required' => 'El precio de costo es obligatorio.'
-                ]
-            ],
-            'precio_venta' => [
-                'rules' => 'required',
-                'errors' => [
-                    'required' => 'El precio de venta es obligatorio.'
-                ]
-            ],
-            'stock' => [
-                'rules' => 'required|integer',
-                'errors' => [
-                    'required' => 'El stock es obligatorio.',
-                    'integer' => 'El stock debe ser un número entero.'
-                ]
-            ],
-            'stock_min' => [
-                'rules' => 'required|integer',
-                'errors' => [
-                    'required' => 'El stock mínimo es obligatorio.',
-                    'integer' => 'El stock mínimo debe ser un número entero.'
-                ]
+{
+    $productoModel = new Producto_Model();
+
+    // Validación completa
+    $input = $this->validate([
+        'nombre_prod' => [
+            'rules' => 'required|min_length[3]',
+            'errors' => [
+                'required' => 'El nombre del producto es obligatorio.',
+                'min_length' => 'Debe tener al menos 3 caracteres.'
             ]
-        ]);
-    
-        // Si falla la validación
-        if (!$input) {
-            session()->setFlashdata('error', 'Debe completar todos los campos.');
-            return redirect()->to(base_url('/alta_productos_view'))->withInput();
-        }
-    
-        // Validación de imagen
-        $img = $this->request->getFile('imagen');
-        if (!$img || !$img->isValid()) {
-            session()->setFlashdata('error', 'Debe subir una imagen para el producto.');
-            return redirect()->to(base_url('/alta_productos_view'))->withInput();
-        }
-    
-        // Guardado de imagen
-        $nombre_aleatorio = $img->getRandomName();
-        $img->move(ROOTPATH . 'public/assets/uploads', $nombre_aleatorio);
-    
-        // Armado de datos
-        $data = [
-            'nombre_prod' => $this->request->getVar('nombre_prod'),
-            'categoria_id' => $this->request->getVar('categorias'),
-            'marca_id' => $this->request->getVar('marcas'),
-            'talle_id' => $this->request->getVar('talles'),
-            'genero_id' => $this->request->getVar('generos'),
-            'edad_id' => $this->request->getVar('edades'),
-            'precio_costo' => $this->convertir_a_float($this->request->getVar('precio_costo')),
-            'precio_venta' => $this->convertir_a_float($this->request->getVar('precio_venta')),
-            'stock' => $this->request->getVar('stock'),
-            'stock_min' => $this->request->getVar('stock_min'),
-            'imagen' => $nombre_aleatorio,
-            'eliminado' => 'NO'
-        ];
-    
-        // Insertar producto
-        $productoModel->insert($data);
-        session()->setFlashdata('success', 'Producto creado correctamente.');
-        return redirect()->to(base_url('/crud_productos_view'));
+        ],
+        'categorias' => [
+            'rules' => 'required',
+            'errors' => [
+                'required' => 'Debe seleccionar una categoría.'
+            ]
+        ],
+        'marcas' => [
+            'rules' => 'required',
+            'errors' => [
+                'required' => 'Debe seleccionar una marca.'
+            ]
+        ],
+        'talles' => [
+            'rules' => 'required',
+            'errors' => [
+                'required' => 'Debe seleccionar un talle.'
+            ]
+        ],
+        'generos' => [
+            'rules' => 'required',
+            'errors' => [
+                'required' => 'Debe seleccionar un género.'
+            ]
+        ],
+        'edades' => [
+            'rules' => 'required',
+            'errors' => [
+                'required' => 'Debe seleccionar una edad.'
+            ]
+        ],
+        'precio_costo' => [
+            'rules' => 'required|decimal',
+            'errors' => [
+                'required' => 'El precio de costo es obligatorio.',
+                'decimal' => 'Debe ser un número válido.'
+            ]
+        ],
+        'precio_venta' => [
+            'rules' => 'required|decimal',
+            'errors' => [
+                'required' => 'El precio de venta es obligatorio.',
+                'decimal' => 'Debe ser un número válido.'
+            ]
+        ],
+        'stock' => [
+            'rules' => 'required|integer',
+            'errors' => [
+                'required' => 'El stock es obligatorio.',
+                'integer' => 'Debe ser un número entero.'
+            ]
+        ],
+        'stock_min' => [
+            'rules' => 'required|integer',
+            'errors' => [
+                'required' => 'El stock mínimo es obligatorio.',
+                'integer' => 'Debe ser un número entero.'
+            ]
+        ]
+    ]);
+
+    // Si falla la validación de los campos
+    if (!$input) {
+        session()->setFlashdata('error', 'Debe completar todos los campos correctamente.');
+
+        // Recargar datos para la vista
+        $categoriaModel = new Categoria_model();
+        $marcaModel = new Marca_model();
+        $talleModel = new Talle_model();
+        $generoModel = new Genero_model();
+        $edadModel = new Edad_model();
+
+        $data['categorias'] = $categoriaModel->getCategorias();
+        $data['marcas'] = $marcaModel->getMarcas();
+        $data['talles'] = $talleModel->getTalles();
+        $data['generos'] = $generoModel->getGeneros();
+        $data['edades'] = $edadModel->getEdades();
+        $data['validation'] = \Config\Services::validation();
+
+        $dato['titulo'] = 'Alta producto';
+        echo view('front/head_view', $dato);
+        echo view('front/nav_view');
+        echo view('back/productos/alta_productos_view', $data);
+        echo view('front/footer_view');
+        return;
     }
+
+    // Validación de imagen (obligatoria)
+    $img = $this->request->getFile('imagen');
+    if (!$img || !$img->isValid()) {
+        session()->setFlashdata('error', 'Debe subir una imagen para el producto.');
+
+        // Repetimos carga de datos
+        $categoriaModel = new Categoria_model();
+        $marcaModel = new Marca_model();
+        $talleModel = new Talle_model();
+        $generoModel = new Genero_model();
+        $edadModel = new Edad_model();
+
+        $data['categorias'] = $categoriaModel->getCategorias();
+        $data['marcas'] = $marcaModel->getMarcas();
+        $data['talles'] = $talleModel->getTalles();
+        $data['generos'] = $generoModel->getGeneros();
+        $data['edades'] = $edadModel->getEdades();
+        $data['validation'] = \Config\Services::validation();
+
+        $dato['titulo'] = 'Alta producto';
+        echo view('front/head_view', $dato);
+        echo view('front/nav_view');
+        echo view('back/productos/alta_productos_view', $data);
+        echo view('front/footer_view');
+        return;
+    }
+
+    // Guardado de imagen
+    $nombre_aleatorio = $img->getRandomName();
+    $img->move(ROOTPATH . 'public/assets/uploads', $nombre_aleatorio);
+
+    // Armado de datos
+    $data = [
+        'nombre_prod' => $this->request->getVar('nombre_prod'),
+        'categoria_id' => $this->request->getVar('categorias'),
+        'marca_id' => $this->request->getVar('marcas'),
+        'talle_id' => $this->request->getVar('talles'),
+        'genero_id' => $this->request->getVar('generos'),
+        'edad_id' => $this->request->getVar('edades'),
+        'precio_costo' => $this->convertir_a_float($this->request->getVar('precio_costo')),
+        'precio_venta' => $this->convertir_a_float($this->request->getVar('precio_venta')),
+        'stock' => $this->request->getVar('stock'),
+        'stock_min' => $this->request->getVar('stock_min'),
+        'imagen' => $nombre_aleatorio,
+        'eliminado' => 'NO'
+    ];
+
+    // Insertar producto
+    $productoModel->insert($data);
+    session()->setFlashdata('success', 'Producto creado correctamente.');
+    return redirect()->to(base_url('/crud_productos_view'));
+}
+
     
 
     private function convertir_a_float($valor)

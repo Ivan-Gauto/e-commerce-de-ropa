@@ -11,7 +11,7 @@ $routes->get('/quienes_somos', 'Home::quienes_somos');
 $routes->get('/plantilla_productos/(:segment)', 'Home::plantilla_productos/$1');
 $routes->get('/detalles_producto', 'Home::detalles_producto');
 $routes->get('/comercializacion', 'Home::comercializacion');
-$routes->get('/contacto', 'Home::contacto');
+$routes->get('/contacto', 'Home::contacto', ['filter' => 'auth:cliente']);
 $routes->get('/terminos_y_usos', 'Home::terminos_y_usos');
 
 /**

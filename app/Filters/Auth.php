@@ -24,6 +24,7 @@ class Auth implements FilterInterface
             // Verifica si se requiere rol 'admin' y el usuario no lo tiene
             if (in_array('admin', $arguments)) {
                 if (session()->get('perfil_id') != 1) {
+                    session()->setFlashdata('error', 'Acceso denegado, debe iniciar sesion con un usuario permitido');
                     return redirect()->to('/iniciarsesion_view');
                 }
             }
@@ -31,6 +32,7 @@ class Auth implements FilterInterface
             // Verifica si se requiere rol 'cliente' y el usuario no lo tiene
             if (in_array('cliente', $arguments)) {
                 if (session()->get('perfil_id') != 2) {
+                    session()->setFlashdata('error', 'Acceso denegado, debe iniciar sesion con un usuario permitido');
                     return redirect()->to('/iniciarsesion_view');
                 }
             }
