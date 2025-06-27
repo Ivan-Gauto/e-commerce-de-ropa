@@ -98,7 +98,7 @@ class Producto_controller extends Controller
     public function store()
     {
         $productoModel = new Producto_Model();
-    
+
         // Validación completa
         $input = $this->validate([
             'nombre_prod' => [
@@ -165,24 +165,24 @@ class Producto_controller extends Controller
                 ]
             ]
         ]);
-    
+
         // Si falla la validación
         if (!$input) {
             session()->setFlashdata('error', 'Debe completar todos los campos.');
             return redirect()->to(base_url('/alta_productos_view'))->withInput();
         }
-    
+
         // Validación de imagen
         $img = $this->request->getFile('imagen');
         if (!$img || !$img->isValid()) {
             session()->setFlashdata('error', 'Debe subir una imagen para el producto.');
             return redirect()->to(base_url('/alta_productos_view'))->withInput();
         }
-    
+
         // Guardado de imagen
         $nombre_aleatorio = $img->getRandomName();
         $img->move(ROOTPATH . 'public/assets/uploads', $nombre_aleatorio);
-    
+
         // Armado de datos
         $data = [
             'nombre_prod' => $this->request->getVar('nombre_prod'),
@@ -198,13 +198,13 @@ class Producto_controller extends Controller
             'imagen' => $nombre_aleatorio,
             'eliminado' => 'NO'
         ];
-    
+
         // Insertar producto
         $productoModel->insert($data);
         session()->setFlashdata('success', 'Producto creado correctamente.');
         return redirect()->to(base_url('/crud_productos_view'));
     }
-    
+
 
     private function convertir_a_float($valor)
     {
@@ -263,42 +263,88 @@ class Producto_controller extends Controller
     // Edita un producto existente
     public function editar_producto($id = null)
     {
+        helper(['form']);
         $productoModel = new Producto_Model();
-        $producto = $productoModel->where('id_producto', $id)->first();
+        $producto = $productoModel->find($id);
     
-        if (!$producto) {
-            session()->setFlashdata('fail', 'Producto no encontrado.');
-            return redirect()->to('/crud_productos_view');
+        // Validaciones
+        $input = $this->validate([
+            'nombre_prod'   => 'required|min_length[3]',
+            'categorias'    => 'required',
+            'marcas'        => 'required',
+            'talles'        => 'required',
+            'generos'       => 'required',
+            'edades'        => 'required',
+            'precio_costo'  => 'required|numeric',
+            'precio_venta'  => 'required|numeric',
+            'stock'         => 'required|integer',
+            'stock_min'     => 'required|integer',
+        ], [
+            'nombre_prod' => [
+                'required'   => 'El nombre del producto es obligatorio.',
+                'min_length' => 'Debe tener al menos 3 caracteres.',
+            ],
+            'categorias' => ['required' => 'Debes seleccionar una categoría.'],
+            'marcas'     => ['required' => 'Debes seleccionar una marca.'],
+            'talles'     => ['required' => 'Debes seleccionar un talle.'],
+            'generos'    => ['required' => 'Debes seleccionar un género.'],
+            'edades'     => ['required' => 'Debes seleccionar una edad.'],
+            'precio_costo' => [
+                'required' => 'El precio de costo es obligatorio.',
+                'numeric'  => 'Debe ser un número.',
+            ],
+            'precio_venta' => [
+                'required' => 'El precio de venta es obligatorio.',
+                'numeric'  => 'Debe ser un número.',
+            ],
+            'stock' => [
+                'required' => 'El stock es obligatorio.',
+                'integer'  => 'Debe ser un número entero.',
+            ],
+            'stock_min' => [
+                'required' => 'El stock mínimo es obligatorio.',
+                'integer'  => 'Debe ser un número entero.',
+            ],
+        ]);
+    
+        $categoriaModel = new Categoria_model();
+        $marcaModel = new Marca_model();
+        $talleModel = new Talle_model();
+        $generoModel = new Genero_model();
+        $edadModel = new Edad_model();
+        
+        $categorias = $categoriaModel->findAll();
+        $marcas = $marcaModel->findAll();
+        $talles = $talleModel->findAll();
+        $generos = $generoModel->findAll();
+        $edades = $edadModel->findAll();
+        
+        if (!$input) {
+            
+            session()->setFlashdata('error', 'Error al completar los campos del formulario.');
+
+            return view('front/head_view', ['titulo' => 'Editar Producto'])
+                . view('front/nav_view')
+                . view('back/productos/editar_productos_view', [
+                    'validation'      => $this->validator,
+                    'old'             => $producto,
+                    'categoriaActual' => ['id_categoria' => $producto['categoria_id']],
+                    'marcaActual'     => ['id_marca'     => $producto['marca_id']],
+                    'talleActual'     => ['id_talle'     => $producto['talle_id']],
+                    'generoActual'    => ['id_genero'    => $producto['genero_id']],
+                    'edadActual'      => ['id_edad'      => $producto['edad_id']],
+                    'categorias'      => $categorias,
+                    'marcas'          => $marcas,
+                    'talles'          => $talles,
+                    'generos'         => $generos,
+                    'edades'          => $edades,
+                ])
+                . view('front/footer_view');
         }
     
-        // Verificar campos obligatorios
-        $camposObligatorios = [
-            'nombre_prod',
-            'categorias',
-            'marcas',
-            'talles',
-            'generos',
-            'edades',
-            'precio_costo',
-            'precio_venta',
-            'stock',
-            'stock_min',
-        ];
-    
-        $faltantes = [];
-        foreach ($camposObligatorios as $campo) {
-            $valor = $this->request->getVar($campo);
-            if ($valor === null || trim($valor) === '') {
-                $faltantes[] = $campo;
-            }
-        }
-    
-        if (!empty($faltantes)) {
-            session()->setFlashdata('error', 'Por favor, completa todos los campos obligatorios.');
-            return redirect()->back()->withInput();
-        }
-    
+        // Si pasa validación, guardar datos
         $img = $this->request->getFile('imagen');
+    
         $data = [
             'nombre_prod'  => $this->request->getVar('nombre_prod'),
             'id_categoria' => $this->request->getVar('categorias'),
@@ -313,7 +359,6 @@ class Producto_controller extends Controller
             'eliminado'    => 'NO',
         ];
     
-        // Si se cargó una imagen válida
         if ($img && $img->isValid() && !$img->hasMoved()) {
             $rutaDestino = ROOTPATH . 'public/assets/uploads';
             $nombre_aleatorio = $img->getRandomName();
@@ -321,25 +366,22 @@ class Producto_controller extends Controller
             $data['imagen'] = $nombre_aleatorio;
         }
     
-        // Guardar cambios
-        if ($productoModel->update($id, $data)) {
-            session()->setFlashdata('success', 'Modificación exitosa.');
-        } else {
-            session()->setFlashdata('fail', 'No se pudo actualizar el producto.');
-        }
+        $productoModel->update($id, $data);
     
+        session()->setFlashdata('success', 'Producto actualizado exitosamente.');
         return redirect()->to(base_url('/editar_productos_view/' . $id));
     }
     
 
+
     // Muestra el catálogo de productos con filtros
     public function catalogo()
     {
-        $productoModel = new \App\Models\Producto_model();
-        $generoModel = new \App\Models\Genero_model();
-        $edadModel = new \App\Models\Edad_model();
-        $categoriaModel = new \App\Models\Categoria_model();
-        $marcaModel = new \App\Models\Marca_model();
+        $productoModel = new Producto_model();
+        $generoModel = new Genero_model();
+        $edadModel = new Edad_model();
+        $categoriaModel = new Categoria_model();
+        $marcaModel = new Marca_model();
 
         $filtros = [
             'genero' => $generoModel->findAll(),
@@ -356,10 +398,14 @@ class Producto_controller extends Controller
         $categoriaId = $this->request->getGet('categoria');
         $marcaId = $this->request->getGet('marca');
 
-        if ($generoId) $productos->where('genero_id', $generoId);
-        if ($edadId) $productos->where('edad_id', $edadId);
-        if ($categoriaId) $productos->where('categoria_id', $categoriaId);
-        if ($marcaId) $productos->where('marca_id', $marcaId);
+        if ($generoId)
+            $productos->where('genero_id', $generoId);
+        if ($edadId)
+            $productos->where('edad_id', $edadId);
+        if ($categoriaId)
+            $productos->where('categoria_id', $categoriaId);
+        if ($marcaId)
+            $productos->where('marca_id', $marcaId);
 
         // paginación
         $data['productos'] = $productos->paginate(5);
