@@ -320,8 +320,8 @@ class Producto_controller extends Controller
         $edades = $edadModel->findAll();
         
         if (!$input) {
-            
-            session()->setFlashdata('error', 'Error al completar los campos del formulario.');
+
+            session()->setFlashdata('error', 'Debe completar todos los campos correctamente.');
 
             return view('front/head_view', ['titulo' => 'Editar Producto'])
                 . view('front/nav_view')

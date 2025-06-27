@@ -79,7 +79,7 @@
                         <label for="precio_costo" class="form-label">Precio de costo</label>
                         <div class="input-group">
                             <span class="input-group-text">$</span>
-                            <input type="text" class="form-control <?= isset($validation) && $validation->hasError('precio_costo') ? 'is-invalid' : '' ?>" id="precio_costo" name="precio_costo"
+                            <input type="number" class="form-control <?= isset($validation) && $validation->hasError('precio_costo') ? 'is-invalid' : '' ?>" id="precio_costo" name="precio_costo"
                                 value="<?= old('precio_costo', esc($old['precio_costo'])) ?>">
                         </div>
                         <div style="height: 2vh;">
@@ -94,7 +94,7 @@
                         <label for="precio_venta" class="form-label">Precio de venta</label>
                         <div class="input-group">
                             <span class="input-group-text">$</span>
-                            <input type="text" class="form-control <?= isset($validation) && $validation->hasError('precio_venta') ? 'is-invalid' : '' ?>" id="precio_venta" name="precio_venta"
+                            <input type="number" class="form-control <?= isset($validation) && $validation->hasError('precio_venta') ? 'is-invalid' : '' ?>" id="precio_venta" name="precio_venta"
                                 value="<?= old('precio_venta', esc($old['precio_venta'])) ?>">
                         </div>
                         <div style="height: 2vh;">
